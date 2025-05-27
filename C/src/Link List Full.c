@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,7 +7,7 @@ struct Node {
     struct Node* next;
 };
 
-// Function to create a new node
+// Create a new node
 struct Node* createNode(int data) {
     struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
     newNode->data = data;
@@ -16,14 +15,14 @@ struct Node* createNode(int data) {
     return newNode;
 }
 
-// Insert at the beginning
+// Insert at beginning (position 0)
 void insertAtBeginning(struct Node** head, int data) {
     struct Node* newNode = createNode(data);
     newNode->next = *head;
     *head = newNode;
 }
 
-// Insert at the end
+// Insert at end
 void insertAtEnd(struct Node** head, int data) {
     struct Node* newNode = createNode(data);
     if (*head == NULL) {
@@ -36,32 +35,87 @@ void insertAtEnd(struct Node** head, int data) {
     temp->next = newNode;
 }
 
-// Insert at a given position (1-based index)
+// Insert at any position (0-based index)
 void insertAtPosition(struct Node** head, int data, int position) {
-    if (position < 1) {
-        printf("Position should be >= 1\n");
+    if (position < 0) {
+        printf("Invalid position\n");
         return;
     }
-    if (position == 1) {
+    if (position == 0) {
         insertAtBeginning(head, data);
         return;
     }
 
-    struct Node* newNode = createNode(data);
     struct Node* temp = *head;
-
-    for (int i = 1; i < position - 1 && temp != NULL; i++) {
+    for (int i = 0; i < position - 1 && temp != NULL; i++)
         temp = temp->next;
-    }
 
     if (temp == NULL) {
         printf("Position out of bounds\n");
-        free(newNode);
         return;
     }
 
+    struct Node* newNode = createNode(data);
     newNode->next = temp->next;
     temp->next = newNode;
+}
+
+// Delete from beginning
+void deleteFromBeginning(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = *head;
+    *head = (*head)->next;
+    free(temp);
+}
+
+// Delete from end
+void deleteFromEnd(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    if ((*head)->next == NULL) {
+        free(*head);
+        *head = NULL;
+        return;
+    }
+
+    struct Node* temp = *head;
+    while (temp->next->next != NULL)
+        temp = temp->next;
+
+    free(temp->next);
+    temp->next = NULL;
+}
+
+// Delete from any position (0-based index)
+void deleteFromPosition(struct Node** head, int position) {
+    if (position < 0 || *head == NULL) {
+        printf("Invalid position or list is empty\n");
+        return;
+    }
+
+    if (position == 0) {
+        deleteFromBeginning(head);
+        return;
+    }
+
+    struct Node* temp = *head;
+    for (int i = 0; i < position - 1 && temp != NULL; i++)
+        temp = temp->next;
+
+    if (temp == NULL || temp->next == NULL) {
+        printf("Position out of bounds\n");
+        return;
+    }
+
+    struct Node* nodeToDelete = temp->next;
+    temp->next = nodeToDelete->next;
+    free(nodeToDelete);
 }
 
 // Display the list
@@ -75,18 +129,28 @@ void displayList(struct Node* head) {
     printf("NULL\n");
 }
 
-// Main function
+// Main function to test all operations
 int main() {
     struct Node* head = NULL;
 
-    insertAtBeginning(&head, 10);  // 10
-    insertAtEnd(&head, 20);        // 10 -> 20
-    insertAtEnd(&head, 30);        // 10 -> 20 -> 30
-    insertAtBeginning(&head, 5);   // 5 -> 10 -> 20 -> 30
-    insertAtPosition(&head, 15, 3);// 5 -> 10 -> 15 -> 20 -> 30
-    insertAtPosition(&head, 50, 10);// Invalid position
-
+    // Insert some elements
+    insertAtEnd(&head, 10);
+    insertAtEnd(&head, 20);
+    insertAtEnd(&head, 30);
+    insertAtPosition(&head, 15, 1);
+    insertAtBeginning(&head, 5);  // 5 -> 10 -> 15 -> 20 -> 30
     displayList(head);
+
+    // Deletion operations
+    deleteFromBeginning(&head);   // Delete 5
+    displayList(head);            // 10 -> 15 -> 20 -> 30
+
+    deleteFromEnd(&head);         // Delete 30
+    displayList(head);            // 10 -> 15 -> 20
+
+    deleteFromPosition(&head, 2); // Delete 20
+    displayList(head);            // 10 -> 15
+
 
     return 0;
 }
