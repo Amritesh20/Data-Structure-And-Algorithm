@@ -15,7 +15,7 @@ struct Node* createNode(int data) {
     return newNode;
 }
 
-// Insert at beginning (position 0)
+// Insert at beginning
 void insertAtBeginning(struct Node** head, int data) {
     struct Node* newNode = createNode(data);
     newNode->next = *head;
@@ -35,7 +35,7 @@ void insertAtEnd(struct Node** head, int data) {
     temp->next = newNode;
 }
 
-// Insert at any position (0-based index)
+// Insert at position (0-based)
 void insertAtPosition(struct Node** head, int data, int position) {
     if (position < 0) {
         printf("Invalid position\n");
@@ -77,7 +77,6 @@ void deleteFromEnd(struct Node** head) {
         printf("List is empty\n");
         return;
     }
-
     if ((*head)->next == NULL) {
         free(*head);
         *head = NULL;
@@ -92,7 +91,7 @@ void deleteFromEnd(struct Node** head) {
     temp->next = NULL;
 }
 
-// Delete from any position (0-based index)
+// Delete from position (0-based)
 void deleteFromPosition(struct Node** head, int position) {
     if (position < 0 || *head == NULL) {
         printf("Invalid position or list is empty\n");
@@ -118,6 +117,40 @@ void deleteFromPosition(struct Node** head, int position) {
     free(nodeToDelete);
 }
 
+// ✅ Update a node at a given position
+void updateAtPosition(struct Node* head, int position, int newValue) {
+    if (position < 0) {
+        printf("Invalid position\n");
+        return;
+    }
+
+    struct Node* temp = head;
+    for (int i = 0; i < position && temp != NULL; i++)
+        temp = temp->next;
+
+    if (temp == NULL) {
+        printf("Position out of bounds\n");
+        return;
+    }
+
+    temp->data = newValue;
+}
+
+// ✅ Delete the entire list
+void deleteEntireList(struct Node** head) {
+    struct Node* current = *head;
+    struct Node* nextNode;
+
+    while (current != NULL) {
+        nextNode = current->next;
+        free(current);
+        current = nextNode;
+    }
+
+    *head = NULL;
+    printf("Entire list deleted.\n");
+}
+
 // Display the list
 void displayList(struct Node* head) {
     struct Node* temp = head;
@@ -129,28 +162,27 @@ void displayList(struct Node* head) {
     printf("NULL\n");
 }
 
-// Main function to test all operations
+// Main function for testing
 int main() {
     struct Node* head = NULL;
 
-    // Insert some elements
     insertAtEnd(&head, 10);
     insertAtEnd(&head, 20);
     insertAtEnd(&head, 30);
-    insertAtPosition(&head, 15, 1);
-    insertAtBeginning(&head, 5);  // 5 -> 10 -> 15 -> 20 -> 30
+    insertAtPosition(&head, 15, 1); // 10 -> 15 -> 20 -> 30
+    insertAtBeginning(&head, 5);   // 5 -> 10 -> 15 -> 20 -> 30
     displayList(head);
 
-    // Deletion operations
-    deleteFromBeginning(&head);   // Delete 5
-    displayList(head);            // 10 -> 15 -> 20 -> 30
+    deleteFromBeginning(&head);    // Remove 5
+    deleteFromPosition(&head, 2);  // Remove 20
+    deleteFromEnd(&head);          // Remove 30
+    displayList(head);             // 10 -> 15
 
-    deleteFromEnd(&head);         // Delete 30
-    displayList(head);            // 10 -> 15 -> 20
+    updateAtPosition(head, 1, 99); // Update 15 to 99
+    displayList(head);             // 10 -> 99
 
-    deleteFromPosition(&head, 2); // Delete 20
-    displayList(head);            // 10 -> 15
-
+    deleteEntireList(&head);       // Deletes all
+    displayList(head);             // NULL
 
     return 0;
 }
