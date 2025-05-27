@@ -36,6 +36,33 @@ void insertAtEnd(struct Node** head, int data) {
     temp->next = newNode;
 }
 
+// Insert at a given position (1-based index)
+void insertAtPosition(struct Node** head, int data, int position) {
+    if (position < 1) {
+        printf("Position should be >= 1\n");
+        return;
+    }
+    if (position == 1) {
+        insertAtBeginning(head, data);
+        return;
+    }
+
+    struct Node* newNode = createNode(data);
+    struct Node* temp = *head;
+
+    for (int i = 1; i < position - 1 && temp != NULL; i++) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Position out of bounds\n");
+        free(newNode);
+        return;
+    }
+
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
 
 // Display the list
 void displayList(struct Node* head) {
@@ -52,10 +79,13 @@ void displayList(struct Node* head) {
 int main() {
     struct Node* head = NULL;
 
-    insertAtBeginning(&head, 10); 
-    insertAtEnd(&head, 20);        
-    insertAtEnd(&head, 30);        
-    insertAtBeginning(&head, 5);
+    insertAtBeginning(&head, 10);  // 10
+    insertAtEnd(&head, 20);        // 10 -> 20
+    insertAtEnd(&head, 30);        // 10 -> 20 -> 30
+    insertAtBeginning(&head, 5);   // 5 -> 10 -> 20 -> 30
+    insertAtPosition(&head, 15, 3);// 5 -> 10 -> 15 -> 20 -> 30
+    insertAtPosition(&head, 50, 10);// Invalid position
+
     displayList(head);
 
     return 0;
