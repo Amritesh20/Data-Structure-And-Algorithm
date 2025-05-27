@@ -24,6 +24,17 @@ void insertAtBeginning(struct Node** head, int data) {
 }
 
 // Insert at the end
+void insertAtEnd(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+}
 
 
 // Display the list
@@ -41,12 +52,11 @@ void displayList(struct Node* head) {
 int main() {
     struct Node* head = NULL;
 
-    insertAtBeginning(&head, 10);
-    displayList(head);     
+    insertAtBeginning(&head, 10); 
+    insertAtEnd(&head, 20);        
+    insertAtEnd(&head, 30);        
     insertAtBeginning(&head, 5);
-
     displayList(head);
 
     return 0;
 }
-
