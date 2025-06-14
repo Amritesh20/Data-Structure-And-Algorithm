@@ -166,20 +166,21 @@ void displayList(struct Node* head) {
 int main() {
     struct Node* head = NULL;
 
+    insertAtBeginning(&head, 25);
     insertAtEnd(&head, 10);
     insertAtEnd(&head, 20);
     insertAtEnd(&head, 30);
-    insertAtPosition(&head, 15, 1); // 10 -> 15 -> 20 -> 30
-    insertAtBeginning(&head, 5);   // 5 -> 10 -> 15 -> 20 -> 30
+    insertAtPosition(&head, 15, 1);
+    insertAtBeginning(&head, 5);  
     displayList(head);
 
-    deleteFromBeginning(&head);    // Remove 5
-    deleteFromPosition(&head, 2);  // Remove 20
-    deleteFromEnd(&head);          // Remove 30
-    displayList(head);             // 10 -> 15
+    deleteFromBeginning(&head);   
+    deleteFromPosition(&head, 2); 
+    deleteFromEnd(&head);         
+    displayList(head);           
 
-    updateAtPosition(head, 1, 99); // Update 15 to 99
-    displayList(head);             // 10 -> 99
+    updateAtPosition(head, 1, 99);
+    displayList(head);            
 
     deleteEntireList(&head);       // Deletes all
     displayList(head);             // NULL
